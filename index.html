@@ -90,7 +90,10 @@ async function saveBlob(blob, name){
 async function shoot(){
   if (!video.videoWidth) return;
   const c = document.createElement('canvas');
-  c.width = video.videoWidth; c.height = video.videoHeight;
+  // 긴 변 960px로 줄여서 저장 (회사 노트북용 작은 용량)
+  const MAX = 960;
+  const sc = Math.min(1, MAX / Math.max(video.videoWidth, video.videoHeight));
+  c.width = Math.round(video.videoWidth * sc); c.height = Math.round(video.videoHeight * sc);
   const ctx = c.getContext('2d');
   if (facing==='user'){ ctx.translate(c.width,0); ctx.scale(-1,1); }
   ctx.drawImage(video,0,0,c.width,c.height);
@@ -105,7 +108,7 @@ async function shoot(){
     document.getElementById('last').textContent='';
     document.getElementById('last').appendChild(thumb);
     await saveBlob(blob, lastName);
-  }, 'image/jpeg', 0.92);
+  }, 'image/jpeg', 0.7);
 }
 
 document.getElementById('shutter').onclick = shoot;
